@@ -8,17 +8,10 @@ import fs from 'fs';
 const app = express();
 const PORT = 3001;
 
-// CORS für Next.js Frontend
-// app.use(cors({
-//     origin: 'http://localhost:3000',
-//     credentials: true
-// }));
-
 app.use(cors({
     origin: [
         'http://localhost:3000',
-        process.env.FRONTEND_URL || 'https://deine-frontend-url.vercel.app'
-        // ↑ Diese URL trägst du später ein, wenn dein Frontend deployed ist
+        process.env.FRONTEND_URL || 'https://mp3-converter-taupe.vercel.app/'
     ],
     credentials: true
 }));
