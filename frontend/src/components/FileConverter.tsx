@@ -58,7 +58,7 @@ export default function FileConverter() {
         formData.append('file', selectedFile);
 
         try {
-            const response = await axios.post('http://localhost:3001/api/convert', formData, {
+            const response = await axios.post(process.env.FRONTEND_URL || 'https://mp3-converter-taupe.vercel.app/', formData, {
                 responseType: 'blob',
                 headers: {
                     'Content-Type': 'multipart/form-data',
