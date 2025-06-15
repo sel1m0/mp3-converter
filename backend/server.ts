@@ -9,8 +9,17 @@ const app = express();
 const PORT = 3001;
 
 // CORS für Next.js Frontend
+// app.use(cors({
+//     origin: 'http://localhost:3000',
+//     credentials: true
+// }));
+
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: [
+        'http://localhost:3000',
+        process.env.FRONTEND_URL || 'https://deine-frontend-url.vercel.app'
+        // ↑ Diese URL trägst du später ein, wenn dein Frontend deployed ist
+    ],
     credentials: true
 }));
 
@@ -24,8 +33,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // Erstelle Upload/Output Ordner
-const uploadDir = path.join(__dirname, 'uploads');
-const outputDir = path.join(__dirname, 'outputs');
+// const uploadDir = path.join(__dirname, 'uploads');
+// const outputDir = path.join(__dirname, 'outputs');
+
+const uploadDir = '/tmp/uploads';
+const outputDir = '/tmp/outputs';
 
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
@@ -59,7 +71,7 @@ const upload = multer({
             cb(new Error(`Dateityp nicht erlaubt: ${file.mimetype}`));
         }
     },
-    limits: { fileSize: 500 * 1024 * 1024 }
+    limits: { fileSize: 100 * 1024 * 1024 }
 });
 
 // Test Endpoint
@@ -127,23 +139,17 @@ app.post('/api/convert', upload.single('file'), async (req: Request, res: Respon
 });
 
 // Health Check
-app.get('/api/health', (req: Request, res: Response) => {
-    res.json({ status: 'OK', message: 'Server läuft' });
-});
-
-// Error handling middleware - MUSS am Ende sein!
-// app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-//     if (err instanceof multer.MulterError) {
-//         if (err.code === 'LIMIT_FILE_SIZE') {
-//             return res.status(400).json({ error: 'Datei ist zu groß!' });
-//         }
-//         return res.status(400).json({ error: err.message });
-//     } else if (err) {
-//         console.error('Server Error:', err);
-//         return res.status(400).json({ error: err.message });
-//     }
-//     next();
+// app.get('/api/health', (req: Request, res: Response) => {
+//     res.json({ status: 'OK', message: 'Server läuft' });
 // });
+
+app.get('/health', (req: Request, res: Response) => {
+    res.json({ 
+        status: 'OK', 
+        message: 'Server läuft',
+        timestamp: new Date().toISOString()
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server läuft auf http://localhost:${PORT}`);
