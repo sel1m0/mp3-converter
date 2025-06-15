@@ -7,9 +7,9 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Dependencies installieren
+# Dependencies installieren (inklusive devDependencies für Build)
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Source code kopieren
 COPY . .
@@ -17,8 +17,11 @@ COPY . .
 # TypeScript kompilieren
 RUN npm run build
 
+# DevDependencies nach Build entfernen (optional, spart Platz)
+RUN npm prune --production
+
 # Port exponieren
 EXPOSE 3001
 
-# App starten (verwendet dein existierendes npm start)
+# App starten
 CMD ["npm", "start"]
