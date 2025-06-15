@@ -18,6 +18,8 @@ export default function FileConverter() {
     });
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -58,7 +60,7 @@ export default function FileConverter() {
         formData.append('file', selectedFile);
 
         try {
-            const response = await axios.post('https://mp3-converter-xdo8.onrender.com/api/convert', formData, {
+            const response = await axios.post(`${API_URL}/api/convert`, formData, {
                 responseType: 'blob',
                 headers: {
                     'Content-Type': 'multipart/form-data',
