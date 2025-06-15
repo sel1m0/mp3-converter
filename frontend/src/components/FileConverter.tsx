@@ -58,7 +58,7 @@ export default function FileConverter() {
         formData.append('file', selectedFile);
 
         try {
-            const response = await axios.post('https://mp3-converter-xdo8.onrender.com', formData, {
+            const response = await axios.post('https://mp3-converter-xdo8.onrender.com/api/convert', formData, {
                 responseType: 'blob',
                 headers: {
                     'Content-Type': 'multipart/form-data',
